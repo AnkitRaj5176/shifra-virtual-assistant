@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shifra — Login</title>
+  <link rel="shortcut icon" href="logo.jpg" type="image/x-icon"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="auth.css"/>
+</head>
+<body>
+
+  <div class="auth-card">
+
+    <!-- Logo -->
+    <img src="logo2.png" alt="Shifra Logo" class="auth-logo"/>
+
+    <!-- Title -->
+    <h2>Welcome to <span>Shifra</span></h2>
+    <p class="auth-subtitle">Login to talk with your Virtual Assistant</p>
+
+    <!-- Message Box -->
+    <div class="msg" id="msg"></div>
+
+    <!-- Login Form -->
+    <form id="loginForm" autocomplete="off" style="width:100%">
+
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <div class="input-wrap">
+          <span class="icon">📧</span>
+          <input
+            type="email"
+            id="email"
+            placeholder="Enter your email"
+            required
+          />
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrap">
+          <span class="icon">🔒</span>
+          <input
+            type="password"
+            id="password"
+            placeholder="Enter your password"
+            required
+          />
+          <span class="toggle-pass" id="togglePass" title="Show/Hide password">👁️</span>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" class="auth-btn">🚀 Login</button>
+
+    </form>
+
+    <!-- Divider -->
+    <div class="divider">
+      <hr/><span>Don't have an account?</span><hr/>
+    </div>
+
+    <!-- Redirect -->
+    <p class="redirect-text">
+      <a href="register.html">✨ Create a New Account</a>
+    </p>
+
+  </div>
+
+  <script>
+    const API = 'http://localhost:5000/api';
+
+    // ── Toggle Password Visibility ──
+    const togglePass = document.getElementById('togglePass');
+    const passInput  = document.getElementById('password');
+
+    togglePass.addEventListener('click', () => {
+      if (passInput.type === 'password') {
+        passInput.type = 'text';
+        togglePass.textContent = '🙈';
+      } else {
+        passInput.type = 'password';
+        togglePass.textContent = '👁️';
+      }
+    });
+
+    // ── Show Message Helper ──
+    function showMsg(text, type) {
+      const msg = document.getElementById('msg');
+      msg.textContent = text;
+      msg.className = `msg ${type} show`;
+    }
+
+    // ── Check if already logged in ──
+    const token = localStorage.getItem('shifra_token');
+    if (token) {
+      // Verify token with backend
+      fetch(`${API}/auth/verify`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.valid) window.location.href = 'index.html';
+        else localStorage.clear();
+      })
+      .catch(() => {});
+    }
+
+    // ── Login Form Submit ──
+    document.getElementById('loginForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const btn      = document.querySelector('.auth-btn');
+
+      btn.textContent = '⏳ Logging in...';
+      btn.disabled = true;
+
+      try {
+        const res  = await fetch(`${API}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          showMsg(`❌ ${data.message}`, 'error');
+          btn.textContent = '🚀 Login';
+          btn.disabled = false;
+          return;
+        }
+
+        // Save token & user in localStorage
+        localStorage.setItem('shifra_token', data.token);
+        localStorage.setItem('shifra_current_user', JSON.stringify(data.user));
+
+        showMsg(`✅ Welcome back, ${data.user.name}! Redirecting...`, 'success');
+
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1400);
+
+      } catch (err) {
+        showMsg('❌ Cannot connect to server. Make sure backend is running.', 'error');
+        btn.textContent = '🚀 Login';
+        btn.disabled = false;
+      }
+    });
+  </script>
+
+</body>
+</html>

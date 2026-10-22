@@ -1,0 +1,66 @@
+{
+  "name": "shifra-virtual-assistant",
+  "version": "1.0.0",
+  "description": "Shifra - Your Personal Virtual Assistant",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win --x64"
+  },
+  "build": {
+    "appId": "com.shifra.assistant",
+    "productName": "Shifra",
+    "win": {
+      "target": "nsis",
+      "icon": "icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "icon.ico",
+      "uninstallerIcon": "icon.ico",
+      "installerHeaderIcon": "icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Shifra"
+    },
+    "files": [
+      "**/*",
+      "!node_modules/**"
+    ],
+    "extraResources": [
+      {
+        "from": "../backend",
+        "to": "backend",
+        "filter": [
+          "**/*",
+          "!node_modules/**"
+        ]
+      },
+      {
+        "from": "..",
+        "to": "frontend",
+        "filter": [
+          "index.html",
+          "login.html",
+          "register.html",
+          "profile.html",
+          "commands.html",
+          "script.js",
+          "style.css",
+          "auth.css",
+          "logo.jpg",
+          "logo1.png",
+          "logo2.png",
+          "mic.svg",
+          "voice.gif",
+          "hey-36263.mp3"
+        ]
+      }
+    ]
+  },
+  "devDependencies": {
+    "electron": "^29.0.0",
+    "electron-builder": "^24.9.1"
+  }
+}

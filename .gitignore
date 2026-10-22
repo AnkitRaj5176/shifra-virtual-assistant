@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+backend/node_modules/
+shifra-app/node_modules/
+
+# Environment variables (contains secrets)
+backend/.env
+
+# Build output
+shifra-app/dist/
+shifra-app/build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db

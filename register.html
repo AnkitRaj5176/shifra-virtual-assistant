@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shifra — Register</title>
+  <link rel="shortcut icon" href="logo.jpg" type="image/x-icon"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="auth.css"/>
+</head>
+<body>
+
+  <div class="auth-card">
+
+    <!-- Logo -->
+    <img src="logo2.png" alt="Shifra Logo" class="auth-logo"/>
+
+    <!-- Title -->
+    <h2>Join <span>Shifra</span></h2>
+    <p class="auth-subtitle">Create your account and meet your assistant</p>
+
+    <!-- Message Box -->
+    <div class="msg" id="msg"></div>
+
+    <!-- Register Form -->
+    <form id="registerForm" autocomplete="off" style="width:100%">
+
+      <!-- Full Name -->
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <div class="input-wrap">
+          <span class="icon">👤</span>
+          <input
+            type="text"
+            id="name"
+            placeholder="Enter your full name"
+            required
+          />
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <div class="input-wrap">
+          <span class="icon">📧</span>
+          <input
+            type="email"
+            id="email"
+            placeholder="Enter your email"
+            required
+          />
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrap">
+          <span class="icon">🔒</span>
+          <input
+            type="password"
+            id="password"
+            placeholder="Create a password"
+            required
+          />
+          <span class="toggle-pass" id="togglePass" title="Show/Hide password">👁️</span>
+        </div>
+        <!-- Strength Bar -->
+        <div class="strength-bar">
+          <div class="strength-fill" id="strengthFill"></div>
+        </div>
+        <div class="strength-label" id="strengthLabel">Password strength</div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <div class="input-wrap">
+          <span class="icon">🔑</span>
+          <input
+            type="password"
+            id="confirmPassword"
+            placeholder="Re-enter your password"
+            required
+          />
+          <span class="toggle-pass" id="toggleConfirm" title="Show/Hide password">👁️</span>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" class="auth-btn">✨ Create Account</button>
+
+    </form>
+
+    <!-- Divider -->
+    <div class="divider">
+      <hr/><span>Already have an account?</span><hr/>
+    </div>
+
+    <!-- Redirect -->
+    <p class="redirect-text">
+      <a href="login.html">🔑 Login Here</a>
+    </p>
+
+  </div>
+
+  <script>
+    const API = 'http://localhost:5000/api';
+
+    // ── Toggle Password Visibility ──
+    function setupToggle(toggleId, inputId) {
+      document.getElementById(toggleId).addEventListener('click', function () {
+        const inp = document.getElementById(inputId);
+        if (inp.type === 'password') {
+          inp.type = 'text';
+          this.textContent = '🙈';
+        } else {
+          inp.type = 'password';
+          this.textContent = '👁️';
+        }
+      });
+    }
+    setupToggle('togglePass',    'password');
+    setupToggle('toggleConfirm', 'confirmPassword');
+
+    // ── Password Strength ──
+    document.getElementById('password').addEventListener('input', function () {
+      const val    = this.value;
+      const fill   = document.getElementById('strengthFill');
+      const label  = document.getElementById('strengthLabel');
+      let score    = 0;
+
+      if (val.length >= 6)                        score++;
+      if (val.length >= 10)                       score++;
+      if (/[A-Z]/.test(val))                      score++;
+      if (/[0-9]/.test(val))                      score++;
+      if (/[^A-Za-z0-9]/.test(val))               score++;
+
+      const levels = [
+        { w: '0%',   bg: 'transparent',  text: 'Password strength' },
+        { w: '25%',  bg: '#ff4d4d',       text: '🔴 Weak' },
+        { w: '50%',  bg: '#ffaa00',       text: '🟡 Fair' },
+        { w: '75%',  bg: '#2ecc71',       text: '🟢 Good' },
+        { w: '100%', bg: '#00e5ff',       text: '💪 Strong' },
+        { w: '100%', bg: '#ffe600',       text: '🔥 Very Strong' },
+      ];
+
+      const lvl     = levels[Math.min(score, 5)];
+      fill.style.width      = lvl.w;
+      fill.style.background = lvl.bg;
+      label.textContent     = lvl.text;
+    });
+
+    // ── Show Message Helper ──
+    function showMsg(text, type) {
+      const msg = document.getElementById('msg');
+      msg.textContent = text;
+      msg.className = `msg ${type} show`;
+    }
+
+    // ── Check if already logged in ──
+    const token = localStorage.getItem('shifra_token');
+    if (token) {
+      window.location.href = 'index.html';
+    }
+
+    // ── Register Form Submit ──
+    document.getElementById('registerForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const name     = document.getElementById('name').value.trim();
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const confirm  = document.getElementById('confirmPassword').value;
+      const btn      = document.querySelector('.auth-btn');
+
+      // Client-side validations
+      if (name.length < 2) {
+        showMsg('❌ Please enter a valid full name.', 'error');
+        return;
+      }
+
+      if (password.length < 6) {
+        showMsg('❌ Password must be at least 6 characters.', 'error');
+        return;
+      }
+
+      if (password !== confirm) {
+        showMsg('❌ Passwords do not match.', 'error');
+        return;
+      }
+
+      btn.textContent = '⏳ Creating account...';
+      btn.disabled = true;
+
+      try {
+        const res  = await fetch(`${API}/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          showMsg(`❌ ${data.message}`, 'error');
+          btn.textContent = '✨ Create Account';
+          btn.disabled = false;
+          return;
+        }
+
+        showMsg(`✅ Account created! Welcome, ${data.user.name}! Redirecting to login...`, 'success');
+
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 1600);
+
+      } catch (err) {
+        showMsg('❌ Cannot connect to server. Make sure backend is running.', 'error');
+        btn.textContent = '✨ Create Account';
+        btn.disabled = false;
+      }
+    });
+  </script>
+
+</body>
+</html>

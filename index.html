@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shifra - My Virtual Assistant</title>
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="logo.jpg" type="image/x-icon">
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="assistant-card">
+
+    <!-- One-time Mic Permission Banner -->
+    <div class="mic-banner" id="micBanner">
+      <span>🎙️ Chrome will ask for microphone access.</span>
+      <strong>Click "Allow while visiting the site"</strong> to avoid repeated prompts.
+      <button class="mic-banner-close" onclick="dismissBanner()">✕</button>
+    </div>
+
+    <!-- Top Bar: User Info + Logout -->
+    <div class="top-bar">
+      <!-- Row 1: User name -->
+      <div class="user-info">
+        <span class="user-avatar">👤</span>
+        <span class="user-name" id="userNameDisplay">User</span>
+      </div>
+      <!-- Row 2: Action buttons -->
+      <div class="top-actions">
+        <button class="lang-toggle-btn" id="langToggle" title="Switch Language">🇮🇳 Hindi</button>
+        <a href="profile.html" class="profile-btn" title="My Profile">⚙️ Profile</a>
+        <a href="commands.html" class="profile-btn" title="Command List">📋 Commands</a>
+        <button class="profile-btn" onclick="showExtensionSetup()" title="Extension Setup">🔌 Extension</button>
+        <button class="logout-btn" id="logoutBtn" title="Logout">🚪 Logout</button>
+      </div>
+    </div>
+
+    <!-- Logo -->
+    <img src="logo2.png" alt="logo" id="logo">
+
+    <!-- Assistant Name -->
+    <h1>
+      Hello, I'm <span id="name">Shifra</span><br>
+      <span id="va">Your Virtual Assistant</span>
+    </h1>
+
+    <!-- Voice Animation -->
+    <img src="voice.gif" alt="voice" id="voice">
+
+    <!-- Extension Setup Modal -->
+    <div id="extModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9999; justify-content:center; align-items:center;">
+      <div style="background:#1a1a2e; border-radius:20px; padding:28px; width:90%; max-width:400px; border:1.5px solid rgba(255,220,50,0.4);">
+        <h3 style="color:#ffe600; margin:0 0 12px;">⚙️ Shifra Extension Setup</h3>
+        <ol style="color:rgba(255,255,255,0.8); font-size:0.85rem; line-height:1.9; padding-left:18px; margin:0 0 16px;">
+          <li>Open <strong style="color:#ffe600">chrome://extensions</strong></li>
+          <li>Enable <strong style="color:#ffe600">Developer Mode</strong> (top right)</li>
+          <li>Click <strong style="color:#ffe600">Load unpacked</strong></li>
+          <li>Select folder: <strong style="color:#ffe600">8.Virtual Assistant/shifra-extension</strong></li>
+          <li>Copy the <strong style="color:#ffe600">Extension ID</strong> shown</li>
+          <li>Paste it below and click Save</li>
+        </ol>
+        <input id="extIdInput" type="text" placeholder="Paste Extension ID here..."
+          style="width:100%; padding:10px 14px; border-radius:10px; border:1.5px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.1); color:#fff; font-size:0.9rem; outline:none; margin-bottom:12px;"/>
+        <div style="display:flex; gap:10px;">
+          <button onclick="saveExtId()" style="flex:1; padding:10px; background:linear-gradient(135deg,#ff7f50,#ffe600); border:none; border-radius:30px; font-weight:700; cursor:pointer;">💾 Save</button>
+          <button onclick="document.getElementById('extModal').style.display='none'" style="flex:1; padding:10px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:30px; color:#fff; cursor:pointer;">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Talk Button -->
+    <button id="btn">
+      <img src="mic.svg" alt="mic">
+      <span id="content">Click here to talk to me</span>
+    </button>
+
+    <!-- Chat Container -->
+    <div class="chat-header" id="chatHeader" style="display:none">
+      <span>💬 Chat History</span>
+      <button class="clear-chat-btn" id="clearChatBtn">🗑️ Clear</button>
+    </div>
+    <div class="chat-container" id="chat"></div>
+
+  </div>
+
+  <!-- Auth Guard + Session -->
+  <script>
+    var API = 'http://localhost:5000/api';
+
+    // Detect if running inside Electron
+    var IS_ELECTRON = navigator.userAgent.includes('Electron');
+
+    // Redirect to login if no token
+    var token = localStorage.getItem('shifra_token');
+    if (!token) {
+      window.location.href = 'login.html';
+    }
+
+    // Show user name from localStorage
+    const currentUser = JSON.parse(localStorage.getItem('shifra_current_user') || '{}');
+    if (currentUser.name) {
+      document.getElementById('userNameDisplay').textContent = currentUser.name;
+    }
+
+    // Verify token with backend on load
+    fetch(`${API}/auth/verify`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (!data.valid) {
+        localStorage.removeItem('shifra_token');
+        localStorage.removeItem('shifra_current_user');
+        window.location.href = 'login.html';
+      } else {
+        // Update user info in case it changed
+        document.getElementById('userNameDisplay').textContent = data.user.name;
+        localStorage.setItem('shifra_current_user', JSON.stringify(data.user));
+      }
+    })
+    .catch(() => {
+      // Backend offline — allow offline use with cached data
+      console.warn('Backend unreachable. Using cached session.');
+    });
+
+    // Logout button
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('shifra_token');
+      localStorage.removeItem('shifra_current_user');
+      window.location.href = 'login.html';
+    });
+
+    // Show mic banner only if not dismissed before
+    function dismissBanner() {
+      document.getElementById('micBanner').style.display = 'none';
+      localStorage.setItem('shifra_mic_banner_dismissed', 'true');
+    }
+
+    if (localStorage.getItem('shifra_mic_banner_dismissed') === 'true') {
+      document.getElementById('micBanner').style.display = 'none';
+    }
+
+    // Extension setup helpers
+    function showExtensionSetup() {
+      document.getElementById('extModal').style.display = 'flex';
+    }
+    function saveExtId() {
+      const id = document.getElementById('extIdInput').value.trim();
+      if (id) {
+        localStorage.setItem('shifra_ext_id', id);
+        document.getElementById('extModal').style.display = 'none';
+        location.reload();
+      }
+    }
+    // Auto-fill if already saved
+    const savedId = localStorage.getItem('shifra_ext_id');
+    if (savedId) document.getElementById('extIdInput').value = savedId;
+  </script>
+
+  <!-- External JS -->
+  <script src="script.js"></script>
+</body>
+</html>

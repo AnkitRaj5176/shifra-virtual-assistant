@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shifra — Command List</title>
+  <link rel="shortcut icon" href="logo.jpg" type="image/x-icon"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    *{ margin:0; padding:0; box-sizing:border-box; font-family:'Roboto',sans-serif; }
+    body{
+      background: linear-gradient(270deg,#6a11cb,#2575fc,#ff7f50);
+      background-size:600% 600%;
+      animation: bg 10s ease infinite;
+      min-height:100vh; padding:30px 16px;
+    }
+    @keyframes bg{ 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+
+    .page-wrap{ max-width:860px; margin:0 auto; }
+
+    .top-nav{
+      display:flex; justify-content:space-between; align-items:center;
+      margin-bottom:28px;
+    }
+    .back-btn{
+      background:rgba(255,255,255,0.15); border:1.5px solid rgba(255,255,255,0.25);
+      color:#fff; padding:9px 20px; border-radius:30px; font-size:0.9rem;
+      font-weight:700; text-decoration:none; transition:background 0.2s;
+    }
+    .back-btn:hover{ background:rgba(255,255,255,0.25); }
+
+    h1{ color:#fff; font-size:2rem; text-align:center; margin-bottom:6px; }
+    h1 span{ color:#ffe600; }
+    .subtitle{ color:rgba(255,255,255,0.65); text-align:center; margin-bottom:30px; font-size:0.95rem; }
+
+    /* Search */
+    .search-wrap{ margin-bottom:24px; position:relative; }
+    .search-wrap input{
+      width:100%; padding:14px 20px 14px 46px;
+      background:rgba(255,255,255,0.15); border:1.5px solid rgba(255,255,255,0.25);
+      border-radius:50px; color:#fff; font-size:1rem; outline:none;
+      transition:border 0.2s;
+    }
+    .search-wrap input::placeholder{ color:rgba(255,255,255,0.45); }
+    .search-wrap input:focus{ border-color:#ffe600; }
+    .search-wrap .si{ position:absolute; left:16px; top:50%; transform:translateY(-50%); font-size:1.2rem; }
+
+    /* Section */
+    .section{
+      background:rgba(255,255,255,0.1); backdrop-filter:blur(20px);
+      border-radius:20px; padding:22px 24px; margin-bottom:20px;
+      border:1px solid rgba(255,255,255,0.15);
+    }
+    .section-title{
+      color:#ffe600; font-size:1.05rem; font-weight:700;
+      margin-bottom:14px; display:flex; align-items:center; gap:8px;
+    }
+    .cmd-grid{
+      display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr));
+      gap:10px;
+    }
+    .cmd-item{
+      background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12);
+      border-radius:12px; padding:10px 14px; color:#fff; font-size:0.85rem;
+      transition:background 0.2s, transform 0.15s; cursor:default;
+    }
+    .cmd-item:hover{ background:rgba(255,255,255,0.18); transform:translateY(-2px); }
+    .cmd-item .cmd-text{ color:#fff; font-weight:600; }
+    .cmd-item .cmd-desc{ color:rgba(255,255,255,0.5); font-size:0.78rem; margin-top:3px; }
+
+    .note{
+      background:rgba(255,220,50,0.12); border:1.5px solid rgba(255,220,50,0.3);
+      border-radius:14px; padding:14px 18px; color:rgba(255,255,255,0.8);
+      font-size:0.85rem; line-height:1.6; margin-bottom:20px;
+    }
+    .note strong{ color:#ffe600; }
+
+    .hidden{ display:none; }
+  </style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <div class="top-nav">
+    <a href="index.html" class="back-btn">← Back to Shifra</a>
+    <h1><span>Shifra</span> Commands</h1>
+    <div style="width:130px"></div>
+  </div>
+
+  <p class="subtitle">Speak any of these commands to Shifra 🎙️</p>
+
+  <div class="note">
+    <strong>💡 Tip:</strong> Commands work in both <strong>English</strong> and <strong>Hinglish</strong>.
+    Laptop app commands require the backend server to be running.
+    Say <strong>"open [app name]"</strong> for most commands.
+  </div>
+
+  <!-- Search -->
+  <div class="search-wrap">
+    <span class="si">🔍</span>
+    <input type="text" id="searchInput" placeholder="Search commands..." oninput="filterCmds()"/>
+  </div>
+
+  <!-- SECTIONS -->
+
+  <div class="section" data-section>
+    <div class="section-title">👋 Greetings & General</div>
+    <div class="cmd-grid">
+      <div class="cmd-item"><div class="cmd-text">"Hello" / "Hey" / "Hi"</div><div class="cmd-desc">Greet Shifra</div></div>
+      <div class="cmd-item"><div class="cmd-text">"How are you" / "Kaise ho"</div><div class="cmd-desc">Ask how Shifra is</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Who are you" / "Tum kaun ho"</div><div class="cmd-desc">Know about Shifra</div></div>
+      <div class="cmd-item"><div class="cmd-text">"What is my name"</div><div class="cmd-desc">Shifra tells your name</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Thank you" / "Shukriya"</div><div class="cmd-desc">Thank Shifra</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Goodbye" / "Bye" / "Stop listening"</div><div class="cmd-desc">Stop Shifra</div></div>
+    </div>
+  </div>
+
+  <div class="section" data-section>
+    <div class="section-title">⏰ Time & Date</div>
+    <div class="cmd-grid">
+      <div class="cmd-item"><div class="cmd-text">"What is the time"</div><div class="cmd-desc">Current time</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Kitne baj gaye"</div><div class="cmd-desc">Current time (Hinglish)</div></div>
+      <div class="cmd-item"><div class="cmd-text">"What is today's date"</div><div class="cmd-desc">Today's date</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Aaj ki tareekh"</div><div class="cmd-desc">Today's date (Hinglish)</div></div>
+    </div>
+  </div>
+
+  <div class="section" data-section>
+    <div class="section-title">😂 Fun & Entertainment</div>
+    <div class="cmd-grid">
+      <div class="cmd-item"><div class="cmd-text">"Tell me a joke"</div><div class="cmd-desc">Random joke</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Joke sunao"</div><div class="cmd-desc">Random joke (Hinglish)</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Play songs" / "Gaana chalao"</div><div class="cmd-desc">Play music on YouTube</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Stop songs" / "Gaana band"</div><div class="cmd-desc">Stop music</div></div>
+    </div>
+  </div>
+
+  <div class="section" data-section>
+    <div class="section-title">🧮 Calculator</div>
+    <div class="cmd-grid">
+      <div class="cmd-item"><div class="cmd-text">"What is 5 plus 3"</div><div class="cmd-desc">Addition</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Calculate 10 minus 4"</div><div class="cmd-desc">Subtraction</div></div>
+      <div class="cmd-item"><div class="cmd-text">"What is 6 times 7"</div><div class="cmd-desc">Multiplication</div></div>
+      <div class="cmd-item"><div class="cmd-text">"What is 20 divided by 4"</div><div class="cmd-desc">Division</div></div>
+      <div class="cmd-item"><div class="cmd-text">"5 plus 3 kitna hai"</div><div class="cmd-desc">Hinglish calculator</div></div>
+    </div>
+  </div>
+
+  <div class="section" data-section>
+    <div class="section-title">🌐 Open Websites (Browser)</div>
+    <div class="cmd-grid">
+      <div class="cmd-item"><div class="cmd-text">"Open YouTube"</div><div class="cmd-desc">youtube.com</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Google"</div><div class="cmd-desc">google.com</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open WhatsApp"</div><div class="cmd-desc">web.whatsapp.com</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Gmail"</div><div class="cmd-desc">mail.google.com</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open GitHub"</div><div class="cmd-desc">github.com</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Facebook"</div><div class="cmd-desc">facebook.com</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Instagram"</div><div class="cmd-desc">instagram.com</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Twitter" / "Open X"</div><div class="cmd-desc">twitter.com</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open LinkedIn"</div><div class="cmd-desc">linkedin.com</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Netflix"</div><div class="cmd-desc">netflix.com</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Amazon"</div><div class="cmd-desc">amazon.in</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Flipkart"</div><div class="cmd-desc">flipkart.com</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Maps"</div><div class="cmd-desc">maps.google.com</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open News"</div><div class="cmd-desc">news.google.com</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Show weather"</div><div class="cmd-desc">Google weather</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open ChatGPT"</div><div class="cmd-desc">chat.openai.com</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Translate"</div><div class="cmd-desc">translate.google.com</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Drive"</div><div class="cmd-desc">drive.google.com</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Docs"</div><div class="cmd-desc">docs.google.com</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Sheets"</div><div class="cmd-desc">sheets.google.com</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Meet"</div><div class="cmd-desc">meet.google.com</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Reddit"</div><div class="cmd-desc">reddit.com</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Stack Overflow"</div><div class="cmd-desc">stackoverflow.com</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Twitch"</div><div class="cmd-desc">twitch.tv</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Pinterest"</div><div class="cmd-desc">pinterest.com</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Search Wikipedia for [topic]"</div><div class="cmd-desc">Wikipedia search</div></div>
+    </div>
+  </div>
+
+  <div class="section" data-section>
+    <div class="section-title">💻 Open Laptop Apps</div>
+    <div class="cmd-grid">
+      <div class="cmd-item"><div class="cmd-text">"Open Notepad"</div><div class="cmd-desc">Windows Notepad</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Calculator"</div><div class="cmd-desc">Windows Calculator</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Paint"</div><div class="cmd-desc">MS Paint</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Wordpad"</div><div class="cmd-desc">Windows Wordpad</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Task Manager"</div><div class="cmd-desc">Task Manager</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Snipping Tool"</div><div class="cmd-desc">Screenshot tool</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Camera"</div><div class="cmd-desc">Windows Camera</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Settings"</div><div class="cmd-desc">Windows Settings</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open File Explorer"</div><div class="cmd-desc">File Explorer</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open CMD"</div><div class="cmd-desc">Command Prompt</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open PowerShell"</div><div class="cmd-desc">PowerShell</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open VS Code"</div><div class="cmd-desc">Visual Studio Code</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Word"</div><div class="cmd-desc">Microsoft Word</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Excel"</div><div class="cmd-desc">Microsoft Excel</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open PowerPoint"</div><div class="cmd-desc">MS PowerPoint</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open VLC"</div><div class="cmd-desc">VLC Media Player</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Spotify"</div><div class="cmd-desc">Spotify</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Chrome"</div><div class="cmd-desc">Google Chrome</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Firefox"</div><div class="cmd-desc">Mozilla Firefox</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Edge"</div><div class="cmd-desc">Microsoft Edge</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Teams"</div><div class="cmd-desc">Microsoft Teams</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Open Skype"</div><div class="cmd-desc">Skype</div></div>
+    </div>
+  </div>
+
+  <div class="section" data-section>
+    <div class="section-title">❌ Close Websites (Browser Tab)</div>
+    <div class="cmd-grid">
+      <div class="cmd-item"><div class="cmd-text">"Close YouTube"</div><div class="cmd-desc">Closes YouTube tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Google"</div><div class="cmd-desc">Closes Google tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close WhatsApp"</div><div class="cmd-desc">Closes WhatsApp tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Gmail"</div><div class="cmd-desc">Closes Gmail tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close GitHub"</div><div class="cmd-desc">Closes GitHub tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Facebook"</div><div class="cmd-desc">Closes Facebook tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Instagram"</div><div class="cmd-desc">Closes Instagram tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Twitter"</div><div class="cmd-desc">Closes Twitter tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close LinkedIn"</div><div class="cmd-desc">Closes LinkedIn tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Netflix"</div><div class="cmd-desc">Closes Netflix tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Amazon"</div><div class="cmd-desc">Closes Amazon tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Flipkart"</div><div class="cmd-desc">Closes Flipkart tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Maps"</div><div class="cmd-desc">Closes Maps tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close News"</div><div class="cmd-desc">Closes News tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Weather"</div><div class="cmd-desc">Closes Weather tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close ChatGPT"</div><div class="cmd-desc">Closes ChatGPT tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Translate"</div><div class="cmd-desc">Closes Translate tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Drive"</div><div class="cmd-desc">Closes Drive tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Docs"</div><div class="cmd-desc">Closes Docs tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Sheets"</div><div class="cmd-desc">Closes Sheets tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Meet"</div><div class="cmd-desc">Closes Meet tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Reddit"</div><div class="cmd-desc">Closes Reddit tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Stack Overflow"</div><div class="cmd-desc">Closes SO tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Twitch"</div><div class="cmd-desc">Closes Twitch tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Pinterest"</div><div class="cmd-desc">Closes Pinterest tab</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Stop songs" / "Gaana band"</div><div class="cmd-desc">Closes music tab</div></div>
+    </div>
+  </div>
+
+  <div class="section" data-section>
+    <div class="section-title">🔴 Close Laptop Apps</div>
+    <div class="cmd-grid">
+      <div class="cmd-item"><div class="cmd-text">"Close Notepad"</div><div class="cmd-desc">Kills Notepad</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Calculator"</div><div class="cmd-desc">Kills Calculator</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Paint"</div><div class="cmd-desc">Kills MS Paint</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Wordpad"</div><div class="cmd-desc">Kills Wordpad</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Task Manager"</div><div class="cmd-desc">Kills Task Manager</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Camera"</div><div class="cmd-desc">Kills Camera app</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close File Explorer"</div><div class="cmd-desc">Kills Explorer</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close CMD"</div><div class="cmd-desc">Kills Command Prompt</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close PowerShell"</div><div class="cmd-desc">Kills PowerShell</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close VS Code"</div><div class="cmd-desc">Kills VS Code</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Word"</div><div class="cmd-desc">Kills MS Word</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Excel"</div><div class="cmd-desc">Kills MS Excel</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close PowerPoint"</div><div class="cmd-desc">Kills PowerPoint</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close VLC"</div><div class="cmd-desc">Kills VLC Player</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Spotify"</div><div class="cmd-desc">Kills Spotify</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Chrome"</div><div class="cmd-desc">Kills Chrome</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Firefox"</div><div class="cmd-desc">Kills Firefox</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Edge"</div><div class="cmd-desc">Kills Edge</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Teams"</div><div class="cmd-desc">Kills MS Teams</div></div>
+      <div class="cmd-item"><div class="cmd-text">"Close Skype"</div><div class="cmd-desc">Kills Skype</div></div>
+    </div>
+  </div>
+
+  <div class="section" data-section>
+    <div class="section-title">🔎 Smart Search (Fallback)</div>
+    <div class="cmd-grid">
+      <div class="cmd-item"><div class="cmd-text">"[Anything]"</div><div class="cmd-desc">Searches Google automatically if command not recognized</div></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function filterCmds() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    document.querySelectorAll('.cmd-item').forEach(item => {
+      item.classList.toggle('hidden', !item.textContent.toLowerCase().includes(q));
+    });
+    document.querySelectorAll('[data-section]').forEach(sec => {
+      const visible = [...sec.querySelectorAll('.cmd-item')].some(i => !i.classList.contains('hidden'));
+      sec.style.display = visible ? '' : 'none';
+    });
+  }
+</script>
+</body>
+</html>
